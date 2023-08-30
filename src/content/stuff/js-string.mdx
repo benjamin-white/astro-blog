@@ -1,0 +1,137 @@
+---
+title: "JS String"
+description: "(a few) String methods"
+pubDate: "Jul 10 2023"
+---
+
+# JS String
+
+### .at()
+
+```js
+const city = "Paris";
+
+console.log(city.at(0));
+// 'P'
+console.log(city.at(-1));
+// 's'
+```
+
+### .charCodeAt()
+
+```js
+const a = "a";
+console.log(a.charCodeAt(0));
+// 97
+const abc = "abc";
+console.log(abc.charCodeAt(2));
+// 99
+```
+
+### .concat()
+
+```js
+const hello = "hello";
+const greeting = hello.concat(" ", "world");
+console.log(greeting);
+// 'hello world'
+
+const message = "".concat(...[hello, ", ", "have a nice day", "!"]);
+console.log(message);
+// 'hello, have a nice day!'
+```
+
+### .endsWith()
+
+```js
+const minionSpeak = "banana?";
+
+console.log(minionSpeak.endsWith("banana"));
+// false
+console.log(minionSpeak.endsWith("?"));
+// true
+```
+
+### .includes()
+
+```js
+const sentence = "This is a sentence.";
+
+sentence.includes("abc");
+// false
+sentence.includes("sentence");
+// true
+```
+
+### .search()
+
+```js
+const sentence = "This is a sentence.";
+
+sentence.search("abc");
+// -1
+sentence.search("sentence");
+// 10
+// ...but note, the argument is actually evaluated as regex, ie:
+"hello.".search(".");
+// 0
+sentence.search(/s[a-z]*e/);
+// 10
+```
+
+### .indexOf()
+
+```js
+const mission = "Brave new world";
+
+console.log(mission.indexOf("w"));
+// 8
+console.log(mission.indexOf("new"));
+// 6
+console.log(mission.indexOf("abc"));
+// -1
+```
+
+### match()
+
+```js
+const paragraph = "The quick brown fox jumps over the lazy dog. It barked.";
+const regex = /[A-Z]/g;
+
+console.log(paragraph.match(regex));
+// Expected output: Array ["T", "I"]
+```
+
+### matchAll()
+
+```js
+const paragraph = "The quick brown fox jumps over the lazy dog. It barked.";
+const regex = /([a-z])\s/g;
+const matches = paragraph.matchAll(regex);
+
+for (const found of matches) {
+  console.log(found);
+}
+```
+
+### .lastIndexOf()
+
+```js
+const mission = "Brave new world";
+
+console.log(mission.lastIndexOf("r"));
+// 12
+```
+
+### .localeCompare()
+
+### .padEnd()
+
+```js
+const yuck = "Breaded Mushrooms";
+const appendString = " yuck!";
+const targetLength = yuck.length + " yuck!".repeat(3).length;
+
+console.log(yuck.padEnd(targetLength, appendString));
+// Breaded Mushrooms yuck! yuck! yuck!
+```

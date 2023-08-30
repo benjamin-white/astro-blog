@@ -1,0 +1,16 @@
+---
+title: "NextJS Performance (a checklist)"
+description: "nextJS optimisations"
+pubDate: "Jun 20 2023"
+---
+
+Use dynamic imports for non critical external scripts, another option is Partytown.
+
+HTTP2 - prefer many small assets to one big bundle
+
+@next/bundle-analyzer to dig down into what's causing any bloat
+
+Set `prefetch` to false on next Link (prefetching will still occur, but now only on hover)
+
+https://www.performancebudget.io/  
+https://dev.to/victorocna/quick-security-wins-for-your-next-js-app-3l23

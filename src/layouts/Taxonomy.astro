@@ -1,0 +1,42 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+import CardPreview from '../components/CardPreview.astro';
+import Grid from '../components/Grid.astro';
+
+const { name: taxonomyName } = Astro.props
+const posts = (await getCollection(taxonomyName)).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+    <div class="site-content-wrap">
+      <main>
+        <div class="container">
+          <section>
+            <Grid>
+              {posts.map(({ data: { title, description }, slug }) =>
+                <CardPreview
+                  title={title}
+                  description={description}
+                  link={`/${taxonomyName}/${slug}`}
+                />
+              )}
+            </Grid>
+          </section>
+        </div>
+      </main>
+      <Footer />
+    </div>
+	</body>
+</html>

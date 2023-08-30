@@ -1,0 +1,33 @@
+---
+title: "CSS In 2023 (and beyond)"
+description: "Modern CSS stuff that I should really learn"
+pubDate: "Jul 05 2023"
+---
+
+### Comparator Container Queries
+
+Sure this is nice, but nothing revolutionary (haha, I'm such a cynic).
+
+```css
+@media (400px <= width <= 1000px) {
+  /* etc. */
+}
+```
+
+### Container Units
+
+So far, I don't get these. As in `1cqw` appears to just be the same thing as `1%`?
+
+### Container Queries
+
+```css
+@container optional-named-container (max-width: 500px) {
+  .selector {
+    display: inline;
+  }
+}
+```
+
+See also:  
+https://moderncss.dev/modern-css-for-dynamic-component-based-architecture/  
+https://smolcss.dev/

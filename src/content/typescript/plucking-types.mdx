@@ -1,0 +1,28 @@
+---
+title: "Plucking types"
+description: "A typed object pluck example"
+pubDate: "Aug 17 2023"
+---
+
+```ts
+const pluck = <T, K extends keyof T>(records: T[], key: k): T[K][] =>
+  records.map((entry) => entry[key]);
+
+pluck([{ name: "John" }], "name");
+
+// NB: signature return type is correctly `string[]`
+// const pluck: <{
+//     name: string;
+// }, "name">(records: {
+//     name: string;
+// }[], key: "name") => string[]
+
+pluck([{ age: 31 }], "age");
+
+// NB: signature return type is correctly `number[]`
+// const pluck: <{
+//     age: number;
+// }, "age">(records: {
+//     age: number;
+// }[], key: "age") => number[]
+```

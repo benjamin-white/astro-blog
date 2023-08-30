@@ -1,0 +1,40 @@
+---
+interface Props {
+  title: string;
+  link: string;
+  description: string;
+}
+
+const { title, link, description } = Astro.props;
+---
+
+<article class="card-preview">
+  <h2>{title}</h2>
+  <p>{description}</p>
+  X items
+  <a href={link} class="sr-only">Read article: {title}</a>
+  <a href={link} class="fill-link" aria-hidden />
+</article>
+
+<style>
+  .card-preview {
+    background-color: #fff;
+    border: 1px solid hsl(0, 0%, 0%, 10%);
+    border-radius: 1rem;
+    padding: 1rem;
+    position: relative
+  }
+  .card-preview .fill-link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  h2 {
+    transition: color .3s ease-in;
+  }
+  .card-preview:hover h2 {
+    color: var(--accent);
+  }
+</style>

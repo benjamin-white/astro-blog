@@ -1,0 +1,138 @@
+---
+title: "SOLID Principles"
+description: "A review of the SOLID principles"
+pubDate: "Jul 05 2023"
+---
+
+### Single Responsibility Principle
+
+Following SRP encourages high cohesion and low coupling.
+
+_Every software component should have one and only one responsibility._
+
+_Every software component should have one and only one reason to change._
+
+_Do one thing and do it well. &mdash; **Linux philosophy**_
+
+This student object allows us to retrieve the institution fees for a student instance, which seems handy.
+
+```ts
+class Student {
+  constructor(studentId) {
+    this.studentId = studentId;
+  }
+
+  get fees() {
+    return this.calculateFees(this.studentId);
+  }
+
+  calculateFees(studentId) {
+    return "calculates the fees";
+  }
+}
+
+new Student(0).fees;
+```
+
+But it doesn't seem right the student object is calculating the fees. It seems like a mixed up responsibility, so we could move calculating and dealing with fees to an object whose remit is solely fees.
+
+```ts
+class Student {
+  constructor(studentId, FeesService) {
+    this.studentId = studentId;
+    this.FeesService = FeesService;
+  }
+
+  get fees() {
+    return FeesService.calculateFees(this.studentId);
+  }
+}
+
+class FeesService {
+  static calculateFees(studentId) {
+    return "calculates the fees";
+  }
+}
+
+new Student(0).fees;
+```
+
+That seems much better, but really the student doesn't need to concern itself with fees _at all_. Accessing the fees directly from a student object is handy, but doesn't justify the potential ambiguity around responsibilities we could run into even still. Let's let that go and remove any notion of fees from `Student`.
+
+```ts
+class Student {
+  #studentId;
+
+  constructor(studentId) {
+    this.#studentId = studentId;
+  }
+
+  get id() {
+    return this.#studentId;
+  }
+}
+
+class FeesService {
+  static calculateFees(studentId) {
+    return "calculates the fees";
+  }
+}
+
+FeesService.calculateFees(new Student(0).id);
+```
+
+### Open-Closed Principle / OCP
+
+_Software components should be closed for modification, but open for extension._
+
+New features being added to a software component should not have to modify the code of the component. The component should expose an API that supports its extending with new features. If this API is designed well pluggging in new functionality can be straightforward and ensures accidental pollution of the component does not happen.
+
+Implementing the Open-Closed principle often requires decoupling, which in turn improves the seperation of concerns / SRP.
+
+Let's take a very basic example of a method that calculates a discount for a price object.
+
+```js
+class PriceCalculator {
+  static discountAmount = 0.2;
+  static calculateCustomerDiscount(price, customer) {
+    return customer.isLoyalCustomer ? price * (1 - this.discountAmount) : price;
+  }
+}
+```
+
+That was ok, but if we wanted to calculate different types of discount and/or different amounts in the future we're a bit stuck. We would have to dive in and start modifying the internals of the `PriceCalculator` class. As it happens we actually left the `discountAmount` property as public, so a consumer of this class could change the `discountAmount`, but this is in fact bad news. Leaving the `discountAmount` directly updatable from outside could trip us up, imagine we changed it to calculate the discount for a trade customer but forgot to reset it before calculating for a consumer customer!
+
+If we externalise the relationship between customer properties and discount we can add more types of discount, elligibility criteria and discount amounts in the future without the need to _modify_ the `PriceCalculator`.
+
+```ts
+const discountsLookUp = [
+  {
+    type: "loyalty",
+    isElligble: (customer) => customer.isLoyal,
+    amount: 0.2,
+  },
+  {
+    type: "concession",
+    isElligble: (customer) => customer.age > 65,
+    amount: 0.15,
+  },
+];
+
+class PriceCalculator {
+  static calculateCustomerDiscount(price, customer, discountsLookUp) {
+    const discount = discountsLookUp.reduce(
+      (acc, cur) => (cur.isElligble(customer) ? acc + cur.amount : acc),
+      0
+    );
+    return price * (1 - discount);
+  }
+}
+```
+
+### Liskov Substitution Principle / LSP
+
+_Objects should be replaceable with their subtypes without affecting the correctness of the program &mdash; **Barbara Liskov**_
+
+### Interface Segregation Principle
+
+### Dependency Inversion

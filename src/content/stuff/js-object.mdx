@@ -1,0 +1,210 @@
+---
+title: "JS (The Object)"
+description: "(almost) All object methods"
+pubDate: "Jul 05 2023"
+---
+
+### .assign()
+
+```js
+const obj = {
+  name: "Ben",
+  age: "old",
+  gender: "male",
+};
+
+const newObj = Object.assign({}, obj);
+console.log(obj);
+// {name: 'Ben', age: 'old', gender: 'male'}
+
+newObj.hobbies = {
+  primary: "reading",
+  secondary: "coding",
+};
+
+const newerObj = Object.assign({}, newObj);
+newObj.hobbies.primary = "reference";
+
+console.log(newerObj.hobbies);
+// {primary: 'reference', secondary: 'coding'}
+console.log(newObj.hobbies);
+// {primary: 'reference', secondary: 'coding'}
+
+// given the above issues with shallow cloning and shared references to nested objects,
+// prefer object spread syntax for shallow copies and `structuredClone` for deep copies
+const markObj = { ...obj, name: "Mark" };
+
+console.log(markObj);
+// {name: 'Mark', age: 'old', gender: 'male'}
+console.log(obj);
+// {name: 'Ben', age: 'old', gender: 'male'}
+
+markObj.hobbies = {
+  primary: "reading",
+  secondary: "coding",
+};
+
+const otherHobbiesObj = structuredClone(markObj);
+otherHobbiesObj.hobbies.primary = "not a reference";
+
+console.log(otherHobbiesObj.hobbies);
+// {primary: 'not a reference', secondary: 'coding'}
+console.log(markObj.hobbies);
+// {primary: 'reading', secondary: 'coding'}
+```
+
+### .entries()
+
+```js
+const object = {
+  a: "somestring",
+  b: 42,
+};
+
+for (const [key, value] of Object.entries(object)) {
+  console.log(`${key}: ${value}`);
+}
+// "a: somestring"
+// "b: 42"
+```
+
+### .keys()
+
+### .values()
+
+### .freeze()
+
+```js
+const obj = {
+  prop: 42,
+};
+
+Object.freeze(obj);
+
+try {
+  obj.prop = 33;
+  // ^ throws an error in strict mode
+  Object.defineProperty(obj, "propTwo", { value: 17 });
+} catch (error) {
+  console.error(error.message);
+}
+// Cannot define property propTwo, object is not extensible
+
+console.log(obj.prop);
+// 42
+```
+
+### .isFrozen()
+
+```js
+const object = {};
+console.log(Object.isFrozen(object));
+// false
+
+Object.freeze(object);
+console.log(Object.isFrozen(object));
+// true
+```
+
+### .fromEntries()
+
+```js
+const object1 = { first: 1, second: 2, third: 3 };
+
+const squared = Object.fromEntries(
+  Object.entries(object1).map(([key, value]) => [key, value ** 2])
+);
+console.log(squared);
+// {first: 1, second: 4, third: 9}
+
+// as an alternative without Object.fromEntries
+Object.entries(object1).reduce((acc, [key, value]) => {
+  acc[key] = value ** 2;
+  return acc;
+}, {});
+```
+
+### .getPrototypeOf()
+
+```js
+Object.getPrototypeOf("foo");
+// String.prototype
+```
+
+### .hasOwn()
+
+```js
+const ancestor = { title: "Objects" };
+const descendant = Object.create(ancestor);
+descendant.description = "Lorem";
+
+Object.hasOwn(descendant, "title");
+// false (for inherited properties down prototype chain)
+Object.hasOwn(descendant, "description");
+// true
+```
+
+### .is()
+
+```js
+console.log(Object.is(NaN, NaN));
+// true
+```
+
+### isExtensible()
+
+```js
+const empty = {};
+Object.isExtensible(empty);
+// true
+
+Object.preventExtensions(empty);
+Object.isExtensible(empty);
+// false
+.
+const sealed = Object.seal({});
+Object.isExtensible(sealed);
+// false
+
+const frozen = Object.freeze({});
+Object.isExtensible(frozen);
+// false
+```
+
+### .prototype.isPrototypeOf()
+
+### .seal()
+
+```js
+const object = {
+  property1: "a",
+};
+
+Object.seal(object);
+// existing properties can be changed
+object.property1 = "b";
+try {
+  // new properties cannot be created
+  object.property2 = "c";
+} catch (error) {
+  console.warn(error.message);
+}
+
+console.log(object);
+// { property1: "b" }
+```
+
+### .isSealed()
+
+```js
+const object = {};
+console.log(Object.isSealed(object));
+// false
+Object.seal(object);
+console.log(Object.isSealed(object));
+// true
+```
+
+### .keys()
+
+### .seal()

@@ -1,0 +1,90 @@
+---
+title: "JS For All"
+description: "Iterating with `in` and `of`"
+pubDate: "Jul 01 2023"
+---
+
+# For In
+
+#### **_With Arrays_**
+
+```js
+const names = ["Mark", "Victoria", "Sarah", "Anthony"];
+
+for (const key in names) console.log(key);
+// 0
+// 1
+// 2
+// 3
+
+for (const key in names) console.log(names[key]);
+// Mark
+// Victoria
+// Sarah
+// Anthony
+```
+
+#### **_With Objects_**
+
+```js
+const person = {
+  name: "Ben",
+  age: "old",
+  gender: "male",
+};
+
+for (const key in person) console.log(key);
+// name
+// age
+// gender
+
+for (const key in person) console.log(person[key]);
+// Ben
+// old
+// male
+```
+
+#### **_Though Prefer_**
+
+```js
+const person = {
+  name: "Ben",
+  age: "old",
+  gender: "male",
+};
+
+Object.keys(person);
+// ['name', 'age', 'gender']
+
+Object.values(person);
+// ['Ben', 'old', 'male']
+
+Object.entries(person);
+// [
+//   ['name', 'Ben']
+//   ['age', 'old']
+//   ['gender', 'male']
+// ]
+
+Object.entries(person).map(([key, value]) => `"${key}" has value: ${value}`)
+  .join`, `;
+// '"name" has value: Ben, "age" has value: old, "gender" has value: male'
+```
+
+# For Of
+
+#### **_With Arrays_**
+
+```js
+const names = ["Mark", "Victoria", "Sarah", "Anthony"];
+
+for (const value of names) console.log(value);
+// Mark
+// Victoria
+// Sarah
+// Anthony
+```
+
+#### **_With Objects_**
+
+This is not for objects.

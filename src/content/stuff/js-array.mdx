@@ -1,0 +1,312 @@
+---
+title: "JS Array Methods"
+description: "(almost) All array methods"
+pubDate: "Jul 12 2023"
+---
+
+# Array
+
+<sup>*</sup> indicates a method that mutates
+
+### .fill() <sup>\*</sup>
+
+```js
+const xs = new Array(4).fill("X");
+
+console.log(xs);
+// ['X', 'X', 'X', 'X']
+
+const fruits = ["apple", "banana", "kiwi", "pear"];
+const berryFruits = [...fruits].fill("blueberry", 2);
+
+console.log(berryFruits);
+// ['apple', 'banana', 'blueberry', 'blueberry']
+```
+
+### ~~.sort()~~ .toSorted()
+
+```js
+const numericValues = [1, 3, 5, 4, 2];
+const descending = numericValues.toSorted((a, b) => b - a);
+
+console.log(descending);
+// [5, 4, 3, 2, 1]
+
+const stringValues = ["z", "y", "c", "a", "E"];
+const alphabetical = stringValues.toSorted((stringA, stringB) =>
+  stringA.toLowerCase() >= stringB.toLowerCase() ? 1 : -1
+);
+
+console.log(stringValues);
+// ['a', 'c', 'E', 'y', 'z']
+
+const nonASCIICharacters = [
+  "réservé",
+  "premier",
+  "communiqué",
+  "café",
+  "adieu",
+  "éclair",
+];
+const alphabeticalAccents = nonASCIICharacters.toSorted((a, b) =>
+  a.localeCompare(b)
+);
+
+console.log(alphabeticalAccents);
+// ['adieu', 'café', 'communiqué', 'éclair', 'premier', 'réservé']
+```
+
+### ~~.reverse()~~ .toReversed()
+
+```js
+const ascending = ["1", "2", "3", "4", "5"];
+const descending = ascending.toReversed();
+
+console.log(descending);
+// ['5', '4', '3', '2', '1']
+```
+
+### .join()
+
+```js
+const animals = ["cat", "dog", "mouse"];
+
+console.log(animals.join``);
+// 'catdogmouse'
+
+console.log(animals.join` and `);
+// cat and dog and mouse
+
+console.log(animals.join());
+// 'cat,dog,mouse'
+
+console.log(animals.join(" and "));
+// 'cat and dog and mouse'
+
+const head = animals.slice(0, -1).join(", ");
+const tail = animals.slice(-1);
+console.log([head, tail].join(" and "));
+// 'cat, dog and mouse'
+```
+
+### .toString()
+
+```js
+const nested = [1, 2, 3, [4, 5]];
+const implicitlyFlattened = nested.toString();
+
+console.log(implicitlyFlattened);
+// '1,2,3,4,5'
+```
+
+### .pop() <sup>\*</sup> &amp; .push(...items) <sup>\*</sup>
+
+```js
+const oneToFive = [1, 2, 3, 4, 5];
+
+const last = [...oneToFive].pop();
+console.log(last);
+// 5
+
+const sixToNine = [6, 7, 8, 9];
+const oneToNine = [...oneToFive];
+oneToNine.push(...sixToNine);
+console.log(oneToNine);
+// [1, 2, 3, 4, 5, 6]
+```
+
+### .shift() <sup>\*</sup> &amp; .unshift(...items) <sup>\*</sup>
+
+```js
+const oneToFive = [1, 2, 3, 4, 5];
+
+const first = [...oneToFive].shift();
+console.log(first);
+// 1
+
+const zeroToFive = [...oneToFive];
+zeroToFive.unshift(0);
+console.log(zeroToFive);
+// [0, 1, 2, 3, 4, 5]
+```
+
+### .concat(...arrays)
+
+```js
+const arrayOne = [1, 2, 3];
+const arrayTwo = [6, 7, 8];
+const arrayThree = [9, 10, 11];
+
+const oneToEleven = arrayOne.concat(arrayTwo, arrayThree);
+console.log(oneToEleven);
+// [1, 2, 3, 6, 7, 8, 9, 10, 11]
+```
+
+### ~~.splice()~~ .toSpliced(start, deleteCount, ...items)
+
+```js
+const fruitsAndVegetables = ["orange", "potato", "carrot", "apple", "banana"];
+
+const fruits = fruitsAndVegetables.toSpliced(1, 2);
+console.log(fruits);
+// ['orange', 'apple', 'banana']
+
+const extraFruits = fruitsAndVegetables.toSpliced(
+  1,
+  2,
+  ...["kiwi", "pear", "grapes"]
+);
+console.log(extraFruits);
+// ['orange', 'kiwi', 'pear', 'grapes', 'apple', 'banana']
+```
+
+### .slice()
+
+```js
+const fruitsAndVegetables = ["orange", "potato", "carrot", "apple", "banana"];
+
+const tail = fruitsAndVegetables.slice(1);
+console.log(tail);
+// ['potato', 'carrot', 'apple', 'banana']
+
+const vegetables = fruitsAndVegetables.slice(1, 3);
+console.log(vegetables);
+// ['potato', 'carrot']
+
+const lastTwo = fruitsAndVegetables.slice(-2);
+console.log(lastTwo);
+// ['apple', 'banana']
+
+const topAndTailed = fruitsAndVegetables.slice(1, -1);
+console.log(topAndTailed);
+// ['potato', 'carrot', 'apple']
+```
+
+### .indexOf(item, fromIndex?)
+
+```js
+const people = ["Mary", "John", "Mark"];
+
+console.log(people.indexOf("John"));
+// 1
+
+console.log(people.indexOf("Sarah"));
+// -1
+```
+
+### .lastIndexOf(item, fromIndex?)
+
+```js
+const people = ["Mary", "John", "Mark", "Mary"];
+
+console.log(people.lastIndexOf("Mary"));
+// 3
+
+console.log(people.indexOf("Sarah"));
+// -1
+```
+
+### .findIndex()
+
+```js
+const people = ["Mary", "John", "Mark"];
+
+console.log(people.findIndex((name) => name.startsWith("J")));
+// 1
+
+console.log(people.findIndex((name) => name.startsWith("K")));
+// -1
+```
+
+### .find()
+
+```js
+const people = [
+  { name: "John", age: 25 },
+  { name: "Mary", age: 40 },
+  { name: "Mark", age: 80 },
+];
+
+const firstPersonOver30 = people.find(({ age }) => age > 30);
+console.log(firstPersonOver30);
+// {name: 'Mary', age: 40}
+
+const firstPersonOver100 = people.find(({ age }) => age > 100);
+console.log(firstPersonOver100);
+// undefined
+```
+
+### .includes()
+
+```js
+const people = ["Mary", "John", "Mark"];
+
+console.log(people.includes("Mark"));
+// true
+
+console.log(people.includes("Sarah"));
+// false
+```
+
+### .some()
+
+```js
+const people = ["Mary", "John", "Mark"];
+
+console.log(people.some((name) => name.startsWith("M")));
+// true
+
+console.log(people.some((name) => name.startsWith("K")));
+// false
+```
+
+### .every()
+
+```js
+const people = ["Mary", "John", "Mark"];
+
+console.log(people.every((name) => name.length === 4));
+// true
+
+console.log(people.every((name) => name.startsWith("M")));
+// false
+```
+
+### .reduce(), .map(), .filter(), .forEach()
+
+// TODO?
+
+### .flat()
+
+```js
+const numbers = [1, 2, [3, 4, [5, 6, [7, 8]]]];
+
+console.log(numbers.flat());
+// [1, 2, 3, 4, [5, 6, [7, 8]]]
+
+console.log(numbers.flat(10));
+// [1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+### .flatMap()
+
+```js
+const numbers = [
+  1.3534543,
+  2.53567,
+  [3.3213, 4.23, [5.3123, 6.1, [7.34234, 8.424289]]],
+];
+
+const twoDecimalPlaces = (number) => +number.toFixed(2);
+
+const flattener = (element, transformer) =>
+  Array.isArray(element)
+    ? element.flatMap((element) => flattener(element, transformer))
+    : transformer?.(element) ?? element;
+
+console.log(flattener(numbers));
+// [1.3534543, 2.53567, 3.3213, 4.23, 5.3123, 6.1, 7.34234, 8.424289]
+
+console.log(flattener(numbers, twoDecimalPlaces));
+// [1.35, 2.54, 3.32, 4.23, 5.31, 6.1, 7.34, 8.42]
+```
