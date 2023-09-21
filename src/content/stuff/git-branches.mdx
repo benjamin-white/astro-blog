@@ -1,0 +1,90 @@
+---
+title: "Git branches"
+description: "Git branching workflow options"
+pubDate: "Aug 12 2023"
+---
+
+## Feature / GitFlow
+
+Gitflow also has separate primary branch lines for development, hotfixes, features, and release  
+Feature branches are checked out and merged when the feature is complete
+
+Often involves a protected `develop` branch
+
+The advantage of feature-based workflows is that hundreds of developers can work on hundreds of unique features at any given time
+
+Feature-based workflows favor less-experienced or less-senior team members. A tech lead, QA, or any development team member can test the build for each merge request.
+
+The best choice for any OSS project.
+
+Works well for a well established product that is not innovating rapidly
+
+The time spent on PRs is not suitable when creating a MVP
+
+## Trunk based
+
+Developers must know how to break their work up into small (independant / self-sufficient) batches
+
+Involves developers committing small changes directly to the main (or _'trunk'_) branch.
+
+Often preferred in DevOps and favoured for CI/CD
+
+In trunk-based development the main branch is assumed to always be stable, without issues, and ready to deploy.
+
+Small commits, easing code review and automated testing. Less merge issues as no long running branches - code is more current.
+
+Branches should be small and short-lived.
+
+Works well alongside [Feature Flags](#feature-flags)
+
+Aim to merge branches once a day (the team can then tag the main trunk at the end of day as a release commit)
+
+Trunk is a simpler branching strategy in comparison to GitFlow and helps set a relaease cadence
+
+Release branches maybe used as snaphosts from trunk and are merged back in
+
+On exception can use short-lived feature branches
+
+# General
+
+Delete branches when no longer in use
+
+An overly heavy code-review process should be avoided as it is a driver for negative behaviours (large merges, PRs sitting idle for a long time)
+
+_Implementing synchronous reviews requires the agreement of the team to prioritize reviewing each others' code over other work._
+
+_When developers know that they can get their code into trunk without a great deal of ceremony, the result is small code changes that are easy to understand, review, test, and which can be moved into production faster._
+
+Have a fast build (use caching like Turborepo)
+
+_Pull Requests focus code review solely on new code. Instead of looking at code as a whole and working to improve it as such, they check only newly introduced changes._
+
+## Tags / Releases (draft)
+
+A tag is technically a type of ref in Git, which is a label that points to a specific commit.
+
+When tagging commits in Semantic Versioning is commonnly used following `vMAJOR.MINOR.PATCH`.
+
+Lightweight vs annotated (which can be signed and verified with GNU Privacy Guard (GPG)) tags?
+
+view tags with `git tag -l` or a wildcard search `git tag -l "v1.*"`
+
+## Feature Flags (draft)
+
+We use feature flags to reduce the risk of deploying to production
+
+It isolates and reduces the deployment risk.
+We have the ability to disable changes in seconds without rolling back a deployment, which could take minutes.
+
+Works in tandem with a service such as https://www.getunleash.io/, https://www.harness.io/products/feature-flags
+
+Using feature flags allows us to work on features incrementally. Only staff members working on the project have the corresponding feature flag enabled, so they can see the new feature that is under development while other users cannot.
+
+In our development environments, we can toggle feature flags from the command line.
+In automated tests, we can enable or disable feature flags in the code.
+In our CI, we have two different builds: one that runs with all feature flags disabled by default, and another one that runs with all feature flags enabled by default. This drastically reduces the chances of not covering most code paths in automated tests properly.
+In production, we can enable or disable feature flags in the query string of a request.
+
+First, we have a runtime cost -> extra queries and/or API Requests
+
+There's also a cost in the form of technical debt as once a feature has been released there is dead code, tests and config.

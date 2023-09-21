@@ -1,0 +1,29 @@
+---
+title: "Enum (or not enum)"
+description: "Confusion over enum efficacy"
+pubDate: "Sep 06 2023"
+---
+
+Some peope say don't do this...
+
+```ts
+const GENRE = {
+  ROMANTIC: "romantic",
+  DRAMA: "drama",
+  COMEDY: "comedy",
+  DOCUMENTARY: "documentary",
+};
+```
+
+Instead do this...
+
+```ts
+enum GENRE {
+  ROMANTIC,
+  DRAMA,
+  COMEDY,
+  DOCUMENTARY,
+}
+```
+
+Which makes sense, as the repetition is weird... but what are the values at runtime this way and does this cause any tripwires with automatic numeric keys?

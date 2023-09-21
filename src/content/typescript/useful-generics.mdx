@@ -1,0 +1,74 @@
+---
+title: "Useful Generics"
+description: "Some examples of day-to-day useful generics"
+pubDate: "Sep 10 2023"
+---
+
+```tsx
+type WithCSSClass<T = object> = T & { className?: string };
+
+type WithCSStyle<T = object> = T & { style?: CSSStyleRule };
+
+type HTMLButtonAttribs = JSX.IntrinsicElements["button"];
+
+type ButtonProps = HTMLButtonAttribs & {
+  customAttrib: boolean;
+};
+
+type Children = {
+  children: React.ReactNode;
+};
+
+// all intrinisic props but fixed type
+type SubmitButtonProps = Omit<JSX.IntrinsicElements["button"], "type"> &
+  Children;
+
+const SubmitButton = ({ children, ...buttonAttribs }: SubmitButtonProps) => (
+  <button type="submit" {...buttonAttribs}>
+    {children}
+  </button>
+);
+
+// use a MakeRequired generic to support all img attribs but with the alt and src as required
+type MakeRequired<T, K extends keyof T> = Omit<T, K> &
+  Required<{ [P in K]: T[P] }>;
+
+type ImgProps = MakeRequired<JSX.IntrinsicElements["img"], "alt" | "src">;
+```
+
+## **_Event Types_**
+
+React has typings to match the native events. That means for them to work you must use the React types not the native ones, eg.
+
+```tsx
+import { MouseEvent } from "react";
+// to do..
+MouseEvent;
+// or use..
+React.MouseEvent;
+```
+
+Supported event types are:
+
+- AnimationEvent
+- ChangeEvent
+- ClipboardEvent
+- CompositionEvent
+- DragEvent
+- FocusEvent
+- FormEvent
+- KeyboardEvent
+- MouseEvent
+- PointerEvent
+- TouchEvent
+- TransitionEvent
+- WheelEvent
+- SyntheticEvent (for anything else, including at the time of writing input events)
+
+Events may be restricted to 1+ nodes by adding a generic to the event type, eg.
+
+```tsx
+MouseEvent<HTMLButtonElement | HTMLAnchorElement>;
+```
+
+Check also this pretty handy [cheatsheet](https://github.com/typescript-cheatsheets/react).

@@ -4,6 +4,10 @@ description: "A review of the SOLID principles"
 pubDate: "Jul 05 2023"
 ---
 
+SOLID Principles compelement each other and work together in unison to achieve the purpose of well-designed software.
+
+Primarily derived from Object Oriented Programming, their ideas (while not neccessarily one to one relatable) are applicable in concept at least to other paradigms.
+
 ### Single Responsibility Principle
 
 Following SRP encourages high cohesion and low coupling.
@@ -131,8 +135,174 @@ class PriceCalculator {
 
 ### Liskov Substitution Principle / LSP
 
-_Objects should be replaceable with their subtypes without affecting the correctness of the program &mdash; **Barbara Liskov**_
+_Objects should be replaceable with their subtypes without affecting the correctness of the program &mdash; **Barbara Liskov**_ Perhaps more succinctly _a subtype should not change the assumptions about its supertype_.
+
+_If it looks like a duck, quacks like a duck and needs batteries &mdash; you probably have the wrong abstraction._ This quote highlights how the LSP is guiding to avoid some of the potential pitfalls with "is-a" thinking / duck typing.
+
+By definition the LSP will satisfy [The Principle of Least Asstonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
+
+```js
+abstract class Shape {
+  #label: string
+
+  constructor(label: string) {
+    this.#label = label
+  }
+
+  getLabel() {
+    return this.#label
+  }
+
+  abstract getArea(): number
+}
+
+class Circle extends Shape {
+  #radius: number
+
+  constructor(label: string, radius: number) {
+    super(label)
+    this.#radius = radius
+  }
+
+  getArea() {
+    return this.#radius * Math.PI ** 2
+  }
+}
+```
+
+The thing to note here is the handling of the `getArea` method. Any child class extending `Shape` should honour this signature.
 
 ### Interface Segregation Principle
 
+_A client should never be forced to implement an interface or depend on a method it doesn't use._
+
+So we can see that not adopting ISP can lead to 'gorilla and banana' problems. Joe Armstrong, the principal inventor of Erlang, is quoted as saying: _"The problem with object-oriented languages is they've got all this implicit environment that they carry around with them. You wanted a banana but what you got was a gorilla holding the banana and the entire jungle."_.
+
+**Example violations of ISP**
+
+- Fat Interfaces
+- Interfaces with low cohesion
+- Empty method implementations
+
+**Example problem:**
+
+```js
+class User {
+  constructor(username) {
+    this.username = username;
+  }
+
+  skipAd() {
+    console.log("Skipping ad");
+  }
+}
+
+class FreeUser extends User {
+  constructor(username) {
+    super(username);
+  }
+}
+
+class PremiumUser extends User {
+  constructor(username) {
+    super(username);
+  }
+}
+
+const premiumUser = new PremiumUser(`name`);
+premium.skipAd();
+// 'Skipping ad'
+const freeUser = new FreeUser(`name`);
+free.skipAd();
+// 'Skipping ad'
+// the problem here is the ability to skip ads was only meant to be a premium feature!
+```
+
+**Better design:**
+
+```js
+class User {
+  constructor(username) {
+    this.username = username;
+  }
+}
+
+class FreeUser extends User {
+  constructor(username) {
+    super(username);
+  }
+}
+
+class PremiumUser extends User {
+  constructor(username) {
+    super(username);
+  }
+
+  skipAd() {
+    console.log("Skipping ad");
+  }
+}
+
+const premiumUser = new PremiumUser(`name`);
+premiumUser.skipAd();
+// 'Skipping ad'
+const freeUser = new FreeUser(`name`);
+freeUser.skipAd();
+// Uncaught TypeError: freeUser.skipAd is not a function
+// which is definitely better, a free user does indeed not support skipping ads!
+```
+
 ### Dependency Inversion
+
+_High level code should never depend on low level interfaces, instead using abstractions._
+
+Basically don't hard code dependencies / specific implementations into your objects! For example...
+
+```js
+class MariaDatabase {
+  static add(item) {
+    // does something
+  }
+}
+class User {
+  static create(userObject) {
+    MariaDatabase.add(userObject);
+  }
+}
+```
+
+...where `User` now implicitly depends on `MariaDatabase` and is tightly coupled to it!
+
+Instead let's create a database interface which is an _abstraction_ of the database and use _dependency injection_ to pass this abstraction into the `User` class. The `User` will now know nothing about MariaDB, Mongo or whatever but only that it recieves a database interface with an add method. This limits future updates or refactoring to the database implementation to the abstraction of it, which is correct as the `User` should not care about those specifics. This is similiar to the _Interpreter Pattern_ where we add an intermediary between objects so neither needs to know the specifics of the other (we introduce a common interface as an abstraction).
+
+```js
+class MariaDatabase {
+  static add(item) {
+    // does something
+  }
+}
+class DatabaseRepositry {
+  constructor(connectionType) {
+    this.connectionType = connectionType;
+  }
+  addUser(user) {
+    switch (this.connectionType) {
+      case "MARIA":
+        MariaDatabase.add(user);
+      // etc.
+    }
+  }
+}
+class User {
+  constructor(dbConnection) {
+    this.db = dbConnection;
+  }
+  create(userObject) {
+    this.db.addUser(userObject);
+  }
+}
+
+const user = new User(new DatabaseRepositry("MARIA"));
+```
+
+This is now definitely more code but the user is much more versatile and we have more freedom to update the specifics of a database connection or add / remove connection types as the `User` no longer depends on any specifics.
