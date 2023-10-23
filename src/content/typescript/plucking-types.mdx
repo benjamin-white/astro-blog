@@ -5,7 +5,7 @@ pubDate: "Aug 17 2023"
 ---
 
 ```ts
-const pluck = <T, K extends keyof T>(records: T[], key: k): T[K][] =>
+const pluck = <T, K extends keyof T>(records: T[], key: K): T[K][] =>
   records.map((entry) => entry[key]);
 
 pluck([{ name: "John" }], "name");

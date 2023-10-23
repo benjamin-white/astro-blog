@@ -19,3 +19,4 @@ pnpm-debug.log*
 # user-specific files
 .DS_Store
 */**/mentoring.md
+*/**/ai-use-cases.mdx

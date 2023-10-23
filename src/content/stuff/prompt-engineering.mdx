@@ -3,3 +3,146 @@ title: "Prompt Engineering"
 description: "Some notes on prompt engineering"
 pubDate: "Sep 12 2023"
 ---
+
+## Fine-tuning
+
+Basically training / transfer learning the model on custom data
+
+## Context Injection
+
+Prime the prompt  
+Information can be accurate and up to date  
+Search for most relevant information to query from documentation (as in vector DB)
+
+## Word Embeddings
+
+eg. OpenAI text-embedding-ada-2
+Works best by creating small chunks from source input  
+Potential for data loss during processing step  
+Word embedding == Vec(float), dimension is variadic, indeed a word embedding is likely to have thousands  
+When a user searches we convert that itself into an embedding we can then query our vector database of word embeddings for.
+
+## Context injection prompt anatomy
+
+Setting up a prompt comprises 3 steps:
+
+**Create Static Template**  
+The static prompt input that does not change between requests.  
+This defines the context, task, input placeholders and boundary conditions.
+
+**Define Dynamic Inputs**  
+This is the source(s) of injected data that may change per request, often direct user input but potentially also a fetch, document, database query, etc.  
+The dynamic data may be free form text, schema controlled or a mix of both.
+
+**Model Parameters**  
+Specification of language model and configuration by hyperparameters such as `temperature`, etc.
+
+The first two steps should give rise to a well structured prompt that will guide the chat agent to perform well. It should encompass the following traits:
+
+**Context**  
+_Set the scene, for example:_  
+Given the following data about a watch...  
+You are a help desk assistant for a retail store...  
+Given the following list of fruit and nutritional info table..
+
+**Task**  
+_Define the objective_  
+Answer the following customer enquiry.  
+Answer the following custom enquiry with the location of the product.  
+Say if the following item is the most nutritious.
+
+**Placeholder with label**  
+"""question"""  
+"""enquiry"""  
+"""fruit"""
+
+**Completion label**  
+_Specify the required output, potentially including formatting instructions and/or conditions._
+
+## Aim for a prompt that covers most if not all of the following:
+
+**_Identity: Give the language model an identity._**
+
+You are a question-answer bot for a luxury watch website.  
+The goal with identity is to prime the language model with context that will reinforce the task you will ask to it do.
+
+**_Context: Give context when applicable. For example, a luxury watch bot will need to know as much information as possible about the product in order to answer questions about it. We must inject this information into the prompt to give it content to work with. This dynamically injected could come from various sources and embeddings used to determine which content is most relevant._**
+
+Given the following information about the product:  
+\{\{ productInformation \}\}
+
+**_Task: Explain the model's job._**
+
+Answer the following question from a customer about the above watch product.
+
+**_Conditions: Prevent the model from hallucinating (making up answers) by adding a condition to the task._**
+
+If the answer is not provided above or you are unsure, reply with "Sorry, I don't know."
+
+**_Labels: Labels help set expectations and structure for the model. Without labels, models will sometimes try to add on to the task itself instead of performing the task. In our example, it would be wise to label our question and answer:_**
+
+Question: """  
+\{\{ question \}\}  
+"""
+
+Answer:
+Notice that we also wrap our question input in triple quotes. This helps make the input explicit for the model. It also helps mitigate against prompt injection.
+
+**_User input: As you can see above, we needed a place to inject user input. Most prompt tools will provide a templating language to allow you to set placeholders within your prompt:_**
+
+\{\{ question \}\}
+
+## Prompt Operations
+
+### Reductive Operations
+
+Take a large amount of text and produce a smaller output. Input
+is larger than the output.
+
+- **Summarization:** Say the same thing with fewer words.
+  Can use list, notes, executive summary.
+- **Distillation:** Purify the underlying principles or facts.
+  Remove all the noise, extract axioms, foundations, etc.
+- **Extraction:** Retrieve specific kinds of information.
+  Question answering, listing names, extracting dates, etc.
+- **Characterizing:** Describe the content of the text.
+  Describe either the text as a whole, or within the subject.
+- **Analyzing:** Find patterns or evaluate against a framework.
+  Structural analysis, rhetorical analysis, etc
+- **Evaluation:** Measuring, grading, or judging the content.
+  Grading papers, evaluating against morals
+- **Critiquing:** Provide feedback within the context of the text.
+  Provide recommendations for improvement
+
+### Transformation Operations
+
+Transmute the input into another format. Input and output are
+roughly the same size and/or meaning.
+
+- **Reformatting:** Change the presentation only.
+  Prose to screenplay, XML to JSON
+- **Refactoring:** Achieve same results with more efficiency.
+  Say the same exact thing, but differently
+- **Language Change:** Translate between languages.
+  English to Russian, C++ to Python
+- **Restructuring:** Optimize structure for logical flow, etc.
+  Change order, add or remove structure
+- **Modification:** Rewrite copy to achieve different intention.
+  Change tone, formality, diplomacy, style, etc
+- **Clarification:** Make something more comprehensible.
+  Embellish or more clearly articulate
+
+### Generative Operations
+
+Generate a large amount of text from a small set of instructions
+or data. Input is smaller than the output.
+
+- **Drafting:** Generate a draft of some kind of document.
+  Code, fiction, legal copy, KB, science, storytelling
+- **Planning:** Given parameters, come up with plans.
+  Actions, projects, objectives, missions, constraints, context.
+- **Brainstorming:** Use imagine to list out possibilities.
+  Ideation, exploration of possibilities, problem solving,
+  hypothesizing
+- **Amplification:** Articulate and explicate something further.
+  Expanding and expounding, riffing on stuff

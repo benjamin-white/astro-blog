@@ -15,9 +15,18 @@ type ButtonProps = HTMLButtonAttribs & {
   customAttrib: boolean;
 };
 
+type CSSClass = { className?: string };
+
+type CSStyle = { style?: CSSStyleRule };
+
 type Children = {
   children: React.ReactNode;
 };
+
+type DefaultComponentProps = CSSClass & CSStyle & Children;
+
+/** Mix with children, className and style props */
+type WithDefaultProps<T = object> = T & DefaultComponentProps;
 
 // all intrinisic props but fixed type
 type SubmitButtonProps = Omit<JSX.IntrinsicElements["button"], "type"> &
@@ -34,6 +43,19 @@ type MakeRequired<T, K extends keyof T> = Omit<T, K> &
   Required<{ [P in K]: T[P] }>;
 
 type ImgProps = MakeRequired<JSX.IntrinsicElements["img"], "alt" | "src">;
+
+type ExtractType<T, K extends keyof T> = T[K];
+
+interface User {
+  id: boolean;
+  name: string;
+}
+
+type IdType = ExtractType<User, "id" | "name">;
+// type of IdType is `boolean`
+
+type IdAndNameType = ExtractType<User, "id" | "name">;
+// type of IdType is `string | boolean`
 ```
 
 ## **_Event Types_**

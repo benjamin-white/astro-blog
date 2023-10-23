@@ -1,0 +1,45 @@
+---
+title: "Conditional Types"
+description: "A useful feature"
+pubDate: "Sep 06 2023"
+---
+
+## Inbuilt generics using conditional types
+
+- NonNullable&lt;T&gt;
+- Extract&lt;T, U&gt;
+- Exclude&lt;T, U&gt;
+- Parameters&lt;T&gt;
+- ReturnType&lt;T&gt;
+- ConstructorParameters&lt;T&gt;
+- InstanceType&lt;T&gt;
+
+## Narrow a return type
+
+```ts
+function double<T>(x: T): T extends string ? string : number;
+function double(x: any) {
+  return x + x;
+}
+
+const str = double("x");
+// str is 'string'
+const num = double(1);
+// num is 'number'
+```
+
+Alternatively...
+
+```ts
+interface double {
+  <T extends string | number>(x: any): T extends string ? string : number;
+}
+const double: double = (x) => x + x;
+
+const str = double<string>("x");
+// str is 'string'
+const num = double<number>(1);
+// num is 'number'
+```
+
+Part of the reason this works is because _conditional types are distributive over unions_.
